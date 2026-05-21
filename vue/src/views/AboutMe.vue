@@ -39,54 +39,24 @@
             <div class="tree-item">
               <img src="../../public/imgs/aboutme/skill-tree/web.png" alt="前端开发">
               <p>前端开发</p>
-            </div>
-            <div class="skill-list">
-              <div
-                v-for="(skill, index) in myScoreConfig.web"
-                :key="index"
-                class="skill-item"
-              >
-                <div class="skill-ring">
-                  <svg viewBox="0 0 120 120">
-                    <circle class="ring-bg" cx="60" cy="60" r="52" />
-                    <circle
-                      class="ring-progress"
-                      cx="60" cy="60" r="52"
-                      :style="{
-                        strokeDashoffset: 327 * (1 - skill.score / 100),
-                        stroke: skill.backcolor || '#1677ff'
-                      }"
-                    />
-                  </svg>
-                  <span class="ring-name">{{ skill.name }}</span>
+              <div class="skill-list">
+                <div class="skill" v-for="(item,i) in myScoreConfig.web" :key="i">
+                  <div class="name">
+                    {{item.name}}
+                  </div>
+
+                  <div class="container">
+                    <div class="progress"></div>
+                  </div>
+                  <div class="score">
+                    {{item.score}}
+                  </div>
                 </div>
               </div>
             </div>
             <div class="tree-item">
               <img src="../../public/imgs/aboutme/skill-tree/server.png" alt="后端开发">
               <p>后端开发</p>
-            </div>
-            <div class="skill-list">
-              <div
-                v-for="(skill, index) in myScoreConfig.server"
-                :key="index"
-                class="skill-item"
-              >
-                <div class="skill-ring">
-                  <svg viewBox="0 0 120 120">
-                    <circle class="ring-bg" cx="60" cy="60" r="52" />
-                    <circle
-                      class="ring-progress"
-                      cx="60" cy="60" r="52"
-                      :style="{
-                        strokeDashoffset: 327 * (1 - skill.score / 100),
-                        stroke: skill.backcolor || '#1677ff'
-                      }"
-                    />
-                  </svg>
-                  <span class="ring-name">{{ skill.name }}</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -96,9 +66,9 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, onUnmounted} from 'vue'
+import {onMounted, onUnmounted, ref} from 'vue'
 
-const myScoreConfig = {
+const myScoreConfig = ref({
   web:[
     {
       name:'HTML',
@@ -129,7 +99,7 @@ const myScoreConfig = {
   server:[
 
   ]
-}
+})
 
 onMounted(() => {
 
@@ -258,18 +228,6 @@ onUnmounted(() => {
             p {
               line-height: 18px;
               font-size: 18px;
-            }
-          }
-
-          .skill-list {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-
-            .skill {
-              padding: 16px;
-              border-radius: 16px;
-              color: white;
             }
           }
         }
