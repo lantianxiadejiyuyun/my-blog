@@ -33,7 +33,7 @@ import BottomBarCommponets from "@/commpoents/BottomBarCommponets.vue";
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom:20px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 *,
