@@ -11,6 +11,9 @@
           <div class="avatar">
             <img src="https://i.pravatar.cc/150" alt="">
             <div class="name">Eugen</div>
+            <div class="desc">
+              热爱动画与编程的全栈开发工程师，追求简洁高效的代码风格
+            </div>
           </div>
         </div>
         <!-- 联系方式 -->
@@ -31,7 +34,7 @@
       </div>
       <!--履历-->
       <div class="resume-box">
-        <div class="skill-treee box">
+        <div class="skill-tree box">
           <div class="title">
             我的技能树
           </div>
@@ -43,6 +46,7 @@
 
             <div class="skill-list">
               <div class="skill" v-for="(item,i) in myScoreConfig.web" :key="i">
+                <img class="skill-icon" :src="item.icon" :alt="item.name">
                 <p :style="{ color: item.color }">
                   {{ item.name }}
                 </p>
@@ -58,6 +62,7 @@
 
             <div class="skill-list">
               <div class="skill" v-for="(item,i) in myScoreConfig.server" :key="i">
+                <img class="skill-icon" :src="item.icon" :alt="item.name">
                 <p :style="{ color: item.color }">
                   {{ item.name }}
                 </p>
@@ -72,22 +77,15 @@
             履历
           </div>
           <div class="timeline">
-            <div class="timeline-item">
+            <div class="timeline-item" v-for="(item,i) in myResume" :key="i">
               <div class="timeline-dot"></div>
               <div class="timeline-content">
-                <h3>2024 - 至今</h3>
-                <p>某公司 前端开发工程师</p>
-              </div>
-            </div>
-            <div class="timeline-item">
-              <div class="timeline-dot"></div>
-              <div class="timeline-content">
-                <h3>2020 - 2024</h3>
-                <p>某大学 计算机科学专业</p>
+                <h3>{{ item.time }}</h3>
+                <p class="company">{{ item.company }}</p>
+                <p class="desc">{{ item.desc }}</p>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -95,51 +93,88 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, ref} from 'vue'
+import {onMounted, onUnmounted, ref} from 'vue'
 
 const myScoreConfig = ref({
   web: [
     {
       name: 'HTML',
-      score: 5,
-      backcolor: '#a8d8ff',
-      color: '#1a73ab',
-    }, {
-      name: 'CSS',
-      score: 4,
-      backcolor: '#a8e6cf',
-      color: '#2e7d5b',
-    }, {
-      name: 'JavaScript',
-      score: 4,
-      backcolor: '#ffe0a8',
-      color: '#b8860b',
+      score: 9.5,
+      backcolor: '#fde8d0',
+      color: '#e44d26',
+      icon: '../../public/imgs/aboutme/skill-tree/html.svg',
     }, {
       name: 'Vue',
-      score: 4,
-      backcolor: '#c8b6ff',
+      score: 9,
+      backcolor: '#d4f5e2',
+      color: '#42b883',
+      icon: '../../public/imgs/aboutme/skill-tree/vue.svg',
+    }, {
+      name: 'CSS',
+      score: 8,
+      backcolor: '#d0e8fd',
+      color: '#264de4',
+      icon: '../../public/imgs/aboutme/skill-tree/css.svg',
+    }, {
+      name: 'JavaScript',
+      score: 8,
+      backcolor: '#fdf6d0',
+      color: '#b8860b',
+      icon: '../../public/imgs/aboutme/skill-tree/javascript.svg',
+    }, {
+      name: 'Uniapp',
+      score: 8,
+      backcolor: '#e2d4f5',
       color: '#6a4fc9',
+      icon: '../../public/imgs/aboutme/skill-tree/uniapp.svg',
     }, {
       name: 'TypeScript',
-      score: 3,
-      backcolor: '#b8e0ff',
-      color: '#1a6fa8',
-    }, {
-      name: 'Node.js',
-      score: 3,
-      backcolor: '#b5ead7',
-      color: '#2b7a5f',
+      score: 7,
+      backcolor: '#d0e4fd',
+      color: '#3178c6',
+      icon: '../../public/imgs/aboutme/skill-tree/typescript.svg',
     }
   ],
   server: [
     {
       name: 'Python',
-      score: 4,
-      backcolor: '#ffccb8',
-      color: '#c45a32',
+      score: 8,
+      backcolor: '#d0f0e8',
+      color: '#3776ab',
+      icon: '../../public/imgs/aboutme/skill-tree/python.svg',
+    }, {
+      name: 'Java',
+      score: 6,
+      backcolor: '#fde8d0',
+      color: '#e76f00',
+      icon: '../../public/imgs/aboutme/skill-tree/java.svg',
+    }, {
+      name: 'Node.js',
+      score: 6,
+      backcolor: '#d4f5d0',
+      color: '#339933',
+      icon: '../../public/imgs/aboutme/skill-tree/nodejs.svg',
     }
   ]
 })
+
+const myResume = ref([
+  {
+    company: '潍坊三立，全栈开发工程师',
+    desc: '负责公司核心业务系统前后端开发，微信小程序开发，uniapp跨端开发，主要技术栈：Vue / TypeScript / Uniapp / Node.js / Python',
+    time: '2024.2 - 至今'
+  },
+  {
+    company: '独立工作室，全栈开发工程师',
+    desc: '负责前端网站以及跨端app开发（宇宙文学Web端官网，宇宙文学Uniapp开发），主要技术栈：Vue / TypeScript / Uniapp',
+    time: '2023.9 - 2023.12'
+  },
+  {
+    company: '潍坊博尧，前端开发工程师',
+    desc: '负责客户项目的前端开发与交付（后台管理平台，企业门户网站），主要技术栈：Vue / JavaScript',
+    time: '2023.5 - 2023.8'
+  }
+])
 
 const getSkillBackWidth = ((score: number) => {
   return (score / 10 * 100) + '%'
@@ -154,6 +189,20 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
+
+@media (max-width: 768px) {
+  .content {
+    .main {
+      flex-direction: column;
+      padding: 0 10px;
+
+      .resume-box {
+        margin: 0 0 0 0 !important;
+      }
+    }
+  }
+}
+
 .content {
   position: relative;
 
@@ -178,7 +227,6 @@ onUnmounted(() => {
     top: -10vh;
     position: relative;
     max-width: 1600px;
-    min-width: 1000px;
     min-height: 100vh;
     margin: 0 auto;
 
@@ -193,28 +241,34 @@ onUnmounted(() => {
         margin-bottom: 16px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 
+        .avatar {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
 
-      }
+          img {
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+          }
 
-      .avatar {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+          .name {
+            margin-top: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+          }
 
-        img {
-          border-radius: 50%;
-          border: 3px solid #fff;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-          width: 100px;
-          height: 100px;
-          object-fit: cover;
-        }
-
-        .name {
-          margin-top: 12px;
-          font-size: 18px;
-          font-weight: 600;
-          color: #333;
+          .desc {
+              margin-top: 8px;
+              font-size: 13px;
+              color: #888;
+              text-align: center;
+              line-height: 1.6;
+          }
         }
       }
 
@@ -266,7 +320,7 @@ onUnmounted(() => {
       margin: 0 0 0 10px;
       flex: 7;
 
-      .skill-treee {
+      .skill-tree {
         padding: 20px;
 
         .title {
@@ -288,6 +342,17 @@ onUnmounted(() => {
               color: #000000;
               border: 1px solid #f0f0f0;
               position: relative;
+              display: flex;
+              align-items: center;
+
+              .skill-icon {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+                flex-shrink: 0;
+                z-index: 20;
+                position: relative;
+              }
 
               p {
                 z-index: 20;
@@ -373,6 +438,19 @@ onUnmounted(() => {
               font-size: 15px;
               color: #1677ff;
               margin-bottom: 4px;
+            }
+
+            .company {
+              font-size: 14px;
+              font-weight: 600;
+              color: #333;
+              margin-bottom: 6px;
+            }
+
+            .desc {
+              font-size: 13px;
+              color: #666;
+              line-height: 1.6;
             }
           }
         }

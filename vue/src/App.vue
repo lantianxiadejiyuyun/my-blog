@@ -4,15 +4,13 @@
     <main class="app-main">
       <router-view />
     </main>
-    <footer class="app-footer">
-      <BottomBarCommponets />
-    </footer>
+    <BottomBarCommponets />
   </div>
 </template>
 
 <script setup lang="ts">
-import TopBarCommponets from "@/commpoents/TopBarCommponets.vue";
-import BottomBarCommponets from "@/commpoents/BottomBarCommponets.vue";
+import TopBarCommponets from "@/component/TopBarCommponets.vue";
+import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
 </script>
 
 <style lang="scss" scoped>

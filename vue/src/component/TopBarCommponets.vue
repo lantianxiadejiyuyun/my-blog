@@ -1,6 +1,6 @@
 <template>
   <div class="topbar">
-    <div class="topbar-brand">MyBlog</div>
+    <div class="topbar-brand">EuGen Blog</div>
     <nav class="topbar-nav">
       <router-link to="/" exact-active-class="active">首页</router-link>
       <router-link to="/aboutme" active-class="active">关于我</router-link>
