@@ -22,11 +22,11 @@
           <div class="list-box">
             <a class="tel-item" href="https://github.com/lantianxiadejiyuyun" target="_blank"
                title="GitHub">
-              <img src="../../public/imgs/aboutme/github.svg" alt="GitHub" width="20" height="20">
+              <img src="/imgs/aboutme/github.svg" alt="GitHub" width="20" height="20">
               <p>Github</p>
             </a>
             <a class="tel-item" href="mailto:your@email.com" title="Email">
-              <img src="../../public/imgs/aboutme/email.svg" alt="Email" width="20" height="20">
+              <img src="/imgs/aboutme/email.svg" alt="Email" width="20" height="20">
               <p>邮箱</p>
             </a>
           </div>
@@ -40,7 +40,7 @@
           </div>
           <div class="tree-message">
             <div class="tree-item">
-              <img src="../../public/imgs/aboutme/skill-tree/web.png" alt="前端开发">
+              <img src="/imgs/aboutme/skill-tree/web.png" alt="前端开发">
               <p>前端开发</p>
             </div>
 
@@ -56,7 +56,7 @@
             </div>
 
             <div class="tree-item">
-              <img src="../../public/imgs/aboutme/skill-tree/server.png" alt="后端开发">
+              <img src="/imgs/aboutme/skill-tree/server.png" alt="后端开发">
               <p>后端开发</p>
             </div>
 
@@ -102,37 +102,37 @@ const myScoreConfig = ref({
       score: 9.5,
       backcolor: '#fde8d0',
       color: '#e44d26',
-      icon: '../../public/imgs/aboutme/skill-tree/html.svg',
+      icon: '/imgs/aboutme/skill-tree/html.svg',
     }, {
       name: 'Vue',
       score: 9,
       backcolor: '#d4f5e2',
       color: '#42b883',
-      icon: '../../public/imgs/aboutme/skill-tree/vue.svg',
+      icon: '/imgs/aboutme/skill-tree/vue.svg',
     }, {
       name: 'CSS',
       score: 8,
       backcolor: '#d0e8fd',
       color: '#264de4',
-      icon: '../../public/imgs/aboutme/skill-tree/css.svg',
+      icon: '/imgs/aboutme/skill-tree/css.svg',
     }, {
       name: 'JavaScript',
       score: 8,
       backcolor: '#fdf6d0',
       color: '#b8860b',
-      icon: '../../public/imgs/aboutme/skill-tree/javascript.svg',
+      icon: '/imgs/aboutme/skill-tree/javascript.svg',
     }, {
       name: 'Uniapp',
       score: 8,
       backcolor: '#e2d4f5',
       color: '#6a4fc9',
-      icon: '../../public/imgs/aboutme/skill-tree/uniapp.svg',
+      icon: '/imgs/aboutme/skill-tree/uniapp.svg',
     }, {
       name: 'TypeScript',
       score: 7,
       backcolor: '#d0e4fd',
       color: '#3178c6',
-      icon: '../../public/imgs/aboutme/skill-tree/typescript.svg',
+      icon: '/imgs/aboutme/skill-tree/typescript.svg',
     }
   ],
   server: [
@@ -141,19 +141,19 @@ const myScoreConfig = ref({
       score: 8,
       backcolor: '#d0f0e8',
       color: '#3776ab',
-      icon: '../../public/imgs/aboutme/skill-tree/python.svg',
+      icon: '/imgs/aboutme/skill-tree/python.svg',
     }, {
       name: 'Java',
       score: 6,
       backcolor: '#fde8d0',
       color: '#e76f00',
-      icon: '../../public/imgs/aboutme/skill-tree/java.svg',
+      icon: '/imgs/aboutme/skill-tree/java.svg',
     }, {
       name: 'Node.js',
       score: 6,
       backcolor: '#d4f5d0',
       color: '#339933',
-      icon: '../../public/imgs/aboutme/skill-tree/nodejs.svg',
+      icon: '/imgs/aboutme/skill-tree/nodejs.svg',
     }
   ]
 })
@@ -208,7 +208,7 @@ onUnmounted(() => {
 
   .header-box {
     position: relative;
-    background: url("../../public/imgs/aboutme/top-back.png");
+    background: url("/imgs/aboutme/top-back.png");
     background-size: cover;
     height: 40vh;
   }
@@ -226,9 +226,7 @@ onUnmounted(() => {
   .main {
     top: -10vh;
     position: relative;
-    max-width: 1600px;
     min-height: 100vh;
-    margin: 0 auto;
 
     display: flex;
     justify-content: space-between;

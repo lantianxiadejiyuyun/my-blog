@@ -34,6 +34,11 @@ import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
   background: rgba(255, 255, 255, 0.9);
 }
 
+.main {
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
 *,
 *::before,
 *::after {
