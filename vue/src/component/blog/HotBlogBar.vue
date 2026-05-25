@@ -17,6 +17,8 @@ defineProps<{
 </script>
 
 <style scoped lang="scss">
+
+
 .hot-blog {
   padding: 24px;
 

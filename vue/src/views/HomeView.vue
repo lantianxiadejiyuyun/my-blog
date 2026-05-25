@@ -13,8 +13,8 @@
                         v-for="(item,i) in blogList" :key="i"></BlogProfileBar>
       </div>
       <div class="info-content">
-        <ServerInfoBar></ServerInfoBar>
         <HotBlogBar :hotBlogList="hotBlogList"></HotBlogBar>
+        <ServerInfoBar></ServerInfoBar>
       </div>
     </section>
   </div>
@@ -112,6 +112,14 @@ const hotBlogList = ref([
 
 <style lang="scss" scoped>
 
+
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+    padding: 0 16px;
+  }
+}
+
 .main {
 
   .content {
@@ -121,8 +129,11 @@ const hotBlogList = ref([
       flex: 7;
     }
     .info-content {
-      margin:  0 0 0 20px;
       flex: 3;
+
+      @media (min-width: 768px) {
+        margin:  0 0 0 20px;
+      }
     }
   }
 
