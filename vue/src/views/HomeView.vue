@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="home-content">
     <section class="hero">
       <h1>欢迎来到我的博客</h1>
       <p>记录技术成长，分享编程心得</p>
@@ -13,6 +13,7 @@
                         v-for="(item,i) in blogList" :key="i"></BlogProfileBar>
       </div>
       <div class="info-content">
+        <AboutMeFlotBar></AboutMeFlotBar>
         <HotBlogBar :hotBlogList="hotBlogList"></HotBlogBar>
         <ServerInfoBar></ServerInfoBar>
       </div>
@@ -24,6 +25,7 @@
 import BlogProfileBar from "@/component/blog/BlogProfileBar.vue";
 import ServerInfoBar from "@/component/info/ServerInfoBar.vue";
 import HotBlogBar from "@/component/blog/HotBlogBar.vue";
+import AboutMeFlotBar from "@/component/AboutMeFlotBar.vue";
 
 import {ref} from "vue";
 
@@ -120,9 +122,36 @@ const hotBlogList = ref([
   }
 }
 
-.main {
+.home-content {
+  position: relative;
+  z-index: 0;
+
+  &::before {
+    content: '';
+    z-index: -2;
+    background: url("/imgs/home/back.png") no-repeat center;
+    background-size: cover;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+  }
+
+  &::after {
+    content: '';
+    z-index: -1;
+    background: rgba(255, 255, 255, 0.6);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+  }
 
   .content {
+    max-width: 1600px;
+    margin: 0 auto;
     display: flex;
 
     .blog-content {

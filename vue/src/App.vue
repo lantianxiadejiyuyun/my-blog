@@ -18,6 +18,7 @@ import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: #f7f7f7;
 }
 
 .app-main {
@@ -29,14 +30,13 @@ import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
 .box {
   padding: 20px 0;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom:20px;
-  border-radius: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
 }
 
 .main {
-  max-width: 1600px;
-  margin: 0 auto;
+
 }
 
 *,

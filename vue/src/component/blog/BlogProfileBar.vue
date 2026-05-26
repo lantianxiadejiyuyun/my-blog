@@ -6,7 +6,7 @@
     <div class="description">
       <div class="title">{{ title }}</div>
       <div class="categories">
-        <span class="tag" v-for="(item,i) in categories" :key="i">{{ item.name }}</span>
+        <i class="fi fi-ss-flag"></i> <span class="tag" v-for="(item,i) in categories" :key="i">{{ item.name }}</span>
       </div>
       <div class="meta">{{ meta }}</div>
       <div class="description">{{ description }}</div>
@@ -42,10 +42,10 @@ defineProps<{
 
   .img {
     flex-shrink: 0;
-    width: 160px;
-    height: 110px;
+    width: 220px;
+    height: 140px;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 8px;
 
     img {
       width: 100%;

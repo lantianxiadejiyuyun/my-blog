@@ -8,6 +8,9 @@ const router = createRouter({
     },
     {
       path:'/aboutme', name:'about',component:() => import('@/views/AboutMe.vue')
+    },
+    {
+      path:'/wordcloud', name:'wordcloud',component:() => import('@/views/WordCloud.vue')
     }
   ],
 })
