@@ -28,12 +28,11 @@ const friendLinks = [
 
 <style lang="scss" scoped>
 .bottombar {
-  background-color: rgb(255, 255, 255, 0.8);
-  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-sm);
   padding: 16px 24px;
   margin-top: auto;
-  z-index: 999;
-
+  z-index: 9;
 }
 
 .bottombar-content {
@@ -50,19 +49,19 @@ const friendLinks = [
 
   a {
     text-decoration: none;
-    color: #555;
+    color: var(--text-secondary);
     font-size: 14px;
     transition: color 0.2s;
 
     &:hover {
-      color: #333;
+      color: var(--text-primary);
     }
   }
 }
 
 .bottombar-copy {
   font-size: 13px;
-  color: #999;
+  color: var(--text-muted);
 }
 
 .bottombar-friends {
@@ -72,7 +71,7 @@ const friendLinks = [
 
   .friends-label {
     font-size: 13px;
-    color: #999;
+    color: var(--text-muted);
   }
 
   a {
@@ -80,7 +79,7 @@ const friendLinks = [
     align-items: center;
     gap: 4px;
     text-decoration: none;
-    color: #555;
+    color: var(--text-secondary);
     font-size: 13px;
     transition: color 0.2s;
 
@@ -90,7 +89,7 @@ const friendLinks = [
     }
 
     &:hover {
-      color: #1677ff;
+      color: var(--color-primary);
     }
   }
 }

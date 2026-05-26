@@ -18,6 +18,8 @@
         <ServerInfoBar></ServerInfoBar>
       </div>
     </section>
+    <ToTopFlotBar></ToTopFlotBar>
+
   </div>
 </template>
 
@@ -26,6 +28,7 @@ import BlogProfileBar from "@/component/blog/BlogProfileBar.vue";
 import ServerInfoBar from "@/component/info/ServerInfoBar.vue";
 import HotBlogBar from "@/component/blog/HotBlogBar.vue";
 import AboutMeFlotBar from "@/component/AboutMeFlotBar.vue";
+import ToTopFlotBar from "@/component/ToTopFlotBar.vue";
 
 import {ref} from "vue";
 
@@ -123,6 +126,7 @@ const hotBlogList = ref([
 }
 
 .home-content {
+  padding: 80px 0;
   position: relative;
   z-index: 0;
 
@@ -141,7 +145,7 @@ const hotBlogList = ref([
   &::after {
     content: '';
     z-index: -1;
-    background: rgba(255, 255, 255, 0.6);
+    background: var(--bg-overlay);
     top: 0;
     bottom: 0;
     left: 0;
@@ -176,7 +180,7 @@ const hotBlogList = ref([
     }
 
     .hero p {
-      color: #666;
+      color: var(--text-secondary);
       font-size: 1.1rem;
     }
   }

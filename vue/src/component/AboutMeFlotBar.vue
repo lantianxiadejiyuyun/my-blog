@@ -37,7 +37,7 @@
   .sidebar-card {
     padding: 24px;
     margin-bottom: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-card);
 
     .avatar {
       display: flex;
@@ -46,8 +46,8 @@
 
       img {
         border-radius: 50%;
-        border: 3px solid #fff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 3px solid var(--bg-primary);
+        box-shadow: var(--shadow-md);
         width: 100px;
         height: 100px;
         object-fit: cover;
@@ -57,13 +57,13 @@
         margin-top: 12px;
         font-size: 18px;
         font-weight: 600;
-        color: #333;
+        color: var(--text-primary);
       }
 
       .desc {
         margin-top: 8px;
         font-size: 13px;
-        color: #888;
+        color: var(--text-muted);
         text-align: center;
         line-height: 1.6;
       }
@@ -73,10 +73,10 @@
   .card-title {
     font-size: 15px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 16px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-color);
   }
 
   .list-box {
@@ -101,9 +101,9 @@
       }
 
       &:hover {
-        background-color: #1677ff;
+        background-color: var(--color-primary);
         transform: translateY(-3px);
-        box-shadow: 0 4px 12px rgba(22, 119, 255, 0.35);
+        box-shadow: 0 4px 12px var(--color-primary-shadow);
         color: #fff;
 
         img {

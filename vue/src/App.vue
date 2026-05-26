@@ -18,7 +18,7 @@ import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #f7f7f7;
+  background: var(--bg-secondary);
 }
 
 .app-main {
@@ -29,14 +29,17 @@ import BottomBarCommponets from "@/component/BottomBarCommponets.vue";
 <style>
 .box {
   padding: 20px 0;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-card);
+  transition: 0.3s;
+  
 }
 
 .main {
-
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 *,
@@ -56,8 +59,7 @@ html {
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: #f5f5f5;
+  color: var(--text-primary);
 }
 
 a {

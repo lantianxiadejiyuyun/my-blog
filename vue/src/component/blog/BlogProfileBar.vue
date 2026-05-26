@@ -37,7 +37,7 @@ defineProps<{
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-lg);
   }
 
   .img {
@@ -66,7 +66,7 @@ defineProps<{
     .title {
       font-size: 17px;
       font-weight: 600;
-      color: #222;
+      color: var(--text-title);
       margin-bottom: 6px;
       white-space: nowrap;
       overflow: hidden;
@@ -75,7 +75,7 @@ defineProps<{
 
     .meta {
       font-size: 12px;
-      color: #aaa;
+      color: var(--text-muted);
       margin-bottom: 8px;
     }
 
@@ -89,13 +89,13 @@ defineProps<{
         font-size: 11px;
         padding: 2px 10px;
         border-radius: 20px;
-        background: #f0f5ff;
-        color: #1677ff;
+        background: var(--color-primary-bg);
+        color: var(--color-primary);
         transition: background 0.2s, color 0.2s;
         cursor: pointer;
 
         &:hover {
-          background: #1677ff;
+          background: var(--color-primary);
           color: #fff;
         }
       }
@@ -103,7 +103,7 @@ defineProps<{
 
     .description {
       font-size: 13px;
-      color: #666;
+      color: var(--text-secondary);
       line-height: 1.6;
       display: -webkit-box;
       -webkit-line-clamp: 2;

@@ -25,10 +25,10 @@ defineProps<{
   .title {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 16px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-color);
   }
 
   .list {
@@ -43,7 +43,7 @@ defineProps<{
     cursor: pointer;
 
     &:hover .name {
-      color: #1677ff;
+      color: var(--color-primary);
     }
 
     .rank {
@@ -51,8 +51,8 @@ defineProps<{
       width: 22px;
       height: 22px;
       border-radius: 6px;
-      background: #f0f0f0;
-      color: #999;
+      background: var(--border-color);
+      color: var(--text-muted);
       font-size: 12px;
       font-weight: 600;
       display: flex;
@@ -61,14 +61,14 @@ defineProps<{
       margin-right: 10px;
 
       &.top {
-        background: #1677ff;
+        background: var(--color-primary);
         color: #fff;
       }
     }
 
     .name {
       font-size: 13px;
-      color: #555;
+      color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

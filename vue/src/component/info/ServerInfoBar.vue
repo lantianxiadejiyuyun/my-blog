@@ -16,15 +16,15 @@
   .title {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 16px;
     padding-bottom: 10px;
-    border-bottom: 2px solid #f0f0f0;
+    border-bottom: 2px solid var(--border-color);
   }
 
   .placeholder {
     text-align: center;
-    color: #bbb;
+    color: var(--text-muted);
     font-size: 13px;
     padding: 40px 0;
   }

@@ -13,7 +13,25 @@
 </template>
 
 <style lang="scss" scoped>
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 2rem 0;
+
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+
+  .wordcloud-placeholder {
+    .placeholder-card {
+      margin: 0 10px;
+      min-height: 300px;
+    }
+  }
+}
 .hero {
+  margin-top: 4rem;
   text-align: center;
   padding: 4rem 0;
 
@@ -23,7 +41,7 @@
   }
 
   p {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 1.1rem;
   }
 }
@@ -40,29 +58,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px dashed #ddd;
+    border: 2px dashed var(--border-light);
     border-radius: 16px;
-    background: #fafafa;
+    background: var(--bg-tertiary);
 
     p {
-      color: #999;
+      color: var(--text-muted);
       font-size: 1.2rem;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .hero {
-    padding: 2rem 0;
 
-    h1 {
-      font-size: 1.8rem;
-    }
-  }
-
-  .wordcloud-placeholder .placeholder-card {
-    margin: 0 10px;
-    min-height: 300px;
-  }
-}
 </style>

@@ -199,7 +199,7 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, transparent, #fff);
+    background: linear-gradient(to bottom, transparent, var(--bg-primary));
   }
 
   .main {
@@ -236,9 +236,9 @@ onUnmounted(() => {
               margin-bottom: 10px;
               padding: 20px;
               border-radius: 10px;
-              background-color: #f4f4f4;
-              color: #000000;
-              border: 1px solid #f0f0f0;
+              background-color: var(--bg-tertiary);
+              color: var(--font-size-color);
+              border: 1px solid var(--border-color);
               position: relative;
               display: flex;
               align-items: center;
@@ -255,7 +255,7 @@ onUnmounted(() => {
               p {
                 z-index: 20;
                 position: relative;
-                color: black;
+                color: var(--font-size-color);
               }
 
               .back {
@@ -307,7 +307,7 @@ onUnmounted(() => {
             top: 4px;
             bottom: 0;
             width: 2px;
-            background: #e0e0e0;
+            background: var(--border-light);
           }
 
           .timeline-item {
@@ -322,32 +322,32 @@ onUnmounted(() => {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #1677ff;
-            border: 2px solid #fff;
-            box-shadow: 0 0 0 2px #1677ff;
+            background: var(--color-primary);
+            border: 2px solid var(--bg-primary);
+            box-shadow: 0 0 0 2px var(--color-primary);
           }
 
           .timeline-content {
             padding: 16px;
-            background: #f9f9f9;
+            background: var(--bg-tertiary);
             border-radius: 8px;
 
             h3 {
               font-size: 15px;
-              color: #1677ff;
+              color: var(--color-primary);
               margin-bottom: 4px;
             }
 
             .company {
               font-size: 14px;
               font-weight: 600;
-              color: #333;
+              color: var(--text-primary);
               margin-bottom: 6px;
             }
 
             .desc {
               font-size: 13px;
-              color: #666;
+              color: var(--text-secondary);
               line-height: 1.6;
             }
           }

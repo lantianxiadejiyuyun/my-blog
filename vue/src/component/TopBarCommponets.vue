@@ -6,12 +6,17 @@
         {{ item.name }}
       </router-link>
     </nav>
+    <button class="theme-toggle" @click="toggle" :title="isDark ? '切换浅色' : '切换深色'">
+      {{ isDark ? '☀️' : '🌙' }}
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import {config} from '@/config/config'
 import {ref} from "vue";
+import { useTheme } from '@/composables/useTheme'
+const { isDark, toggle } = useTheme()
 
 const routerList = ref([
   {
@@ -45,8 +50,8 @@ const routerList = ref([
   justify-content: space-between;
   padding: 0 24px;
   height: 80px;
-  background-color: rgb(255 255 255 / 0.6);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background-color: var(--bg-card);
+  box-shadow: var(--shadow-sm);
   z-index: 999;
   backdrop-filter: blur(10px);
   position: fixed;
@@ -55,7 +60,7 @@ const routerList = ref([
   .topbar-brand {
     font-size: 20px;
     font-weight: 700;
-    color: #333;
+    color: var(--text-primary);
   }
 
   .topbar-nav {
@@ -65,18 +70,31 @@ const routerList = ref([
 
   .topbar-nav a {
     text-decoration: none;
-    color: #555;
+    color: var(--text-secondary);
     font-size: 15px;
     transition: color 0.2s;
   }
 
   .topbar-nav a:hover {
-    color: #333;
+    color: var(--text-primary);
   }
 
   .topbar-nav a.active {
-    color: #1677ff;
+    color: var(--color-primary);
     font-weight: 600;
+  }
+
+  .theme-toggle {
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px;
+    border-radius: 8px;
+    background: transparent;
+    transition: background 0.2s;
+
+    &:hover {
+      background: var(--border-color);
+    }
   }
 }
 
