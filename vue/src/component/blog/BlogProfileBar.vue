@@ -25,7 +25,6 @@ defineProps<{
   categories: BlogCategories [],
 }>()
 
-
 </script>
 
 <style scoped lang="scss">

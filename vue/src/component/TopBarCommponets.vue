@@ -3,7 +3,10 @@
     <div class="topbar-brand">{{ config.blogName }}</div>
     <nav class="topbar-nav">
       <router-link :to="item.path" active-class="active" v-for="(item,i) in routerList" :key="i">
-        {{ item.name }}
+        <i class="fi" :class="item.icon"></i>
+        <p>
+          {{ item.name }}
+        </p>
       </router-link>
     </nav>
     <button class="theme-toggle" @click="toggle" :title="isDark ? '切换浅色' : '切换深色'">
@@ -15,30 +18,23 @@
 <script setup lang="ts">
 import {config} from '@/config/config'
 import {ref} from "vue";
-import { useTheme } from '@/composables/useTheme'
-const { isDark, toggle } = useTheme()
+import {useTheme} from '@/composables/useTheme'
+
+const {isDark, toggle} = useTheme()
 
 const routerList = ref([
   {
     path: "/",
     name: "首页",
-    icon: ''
+    icon: "fi-sr-home"
   }, {
     path: "/wordcloud",
     name: "词云",
-    icon: ''
+    icon: 'fi-ss-clouds'
   }, {
     path: "/aboutme",
     name: "关于",
-    icon: ''
-  }, {
-    path: "/aboutme",
-    name: "关于",
-    icon: ''
-  }, {
-    path: "/aboutme",
-    name: "关于",
-    icon: ''
+    icon: 'fi-ss-apps'
   }
 ])
 </script>
@@ -73,15 +69,21 @@ const routerList = ref([
     color: var(--text-secondary);
     font-size: 15px;
     transition: color 0.2s;
-  }
+    display: flex;
 
-  .topbar-nav a:hover {
-    color: var(--text-primary);
-  }
+    i{
+      margin: 2px 4px 0 0 ;
+    }
 
-  .topbar-nav a.active {
-    color: var(--color-primary);
-    font-weight: 600;
+    &:hover {
+      color: var(--text-primary);
+    }
+
+    &.active {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
   }
 
   .theme-toggle {

@@ -11,6 +11,9 @@ const router = createRouter({
     },
     {
       path:'/wordcloud', name:'wordcloud',component:() => import('@/views/WordCloud.vue')
+    },
+    {
+      path:'/:pathMatch(.*)*', name:'404',component:() => import('@/views/404View.vue')
     }
   ],
 })
