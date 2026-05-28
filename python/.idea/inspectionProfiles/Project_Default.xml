@@ -1,0 +1,23 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="flask-restx" />
+          <option value="cryptography" />
+          <option value="docutils" />
+          <option value="ebaysdk" />
+          <option value="Jinja2" />
+          <option value="libsass" />
+          <option value="num2words" />
+          <option value="psutil" />
+          <option value="pydot" />
+          <option value="pyopenssl" />
+          <option value="pyserial" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>
