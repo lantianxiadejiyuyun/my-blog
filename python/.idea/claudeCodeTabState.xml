@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ClaudeCodeTabState">
+    <option name="tabSessions">
+      <map>
+        <entry key="0">
+          <value>
+            <TabSessionState>
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="8fc05ce5-e1b6-4217-a197-94ea260a90e9" />
+              <option name="cwd" value="$PROJECT_DIR$" />
+              <option name="model" value="glm-5.1" />
+              <option name="permissionMode" value="bypassPermissions" />
+              <option name="reasoningEffort" value="medium" />
+            </TabSessionState>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="tabCount" value="2" />
   </component>
 </project>
