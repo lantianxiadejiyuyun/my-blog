@@ -7,7 +7,7 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="8fc05ce5-e1b6-4217-a197-94ea260a90e9" />
+              <option name="sessionId" value="54203207-63f2-4a77-973f-fa44db1571af" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="glm-5.1" />
               <option name="permissionMode" value="bypassPermissions" />
@@ -15,8 +15,42 @@
             </TabSessionState>
           </value>
         </entry>
+        <entry key="1">
+          <value>
+            <TabSessionState>
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="6349397a-f483-4a37-b32b-25c35fc49d14" />
+              <option name="cwd" value="$PROJECT_DIR$" />
+              <option name="model" value="claude-sonnet-4-6" />
+              <option name="permissionMode" value="bypassPermissions" />
+              <option name="reasoningEffort" value="medium" />
+            </TabSessionState>
+          </value>
+        </entry>
+        <entry key="2">
+          <value>
+            <TabSessionState>
+              <option name="provider" value="claude" />
+              <option name="sessionId" value="4d027d4a-436d-419f-8c87-70c7c530da87" />
+              <option name="cwd" value="$PROJECT_DIR$" />
+              <option name="model" value="deepseek-v4-pro[1M]" />
+              <option name="permissionMode" value="bypassPermissions" />
+              <option name="reasoningEffort" value="medium" />
+            </TabSessionState>
+          </value>
+        </entry>
+        <entry key="3">
+          <value>
+            <TabSessionState>
+              <option name="provider" value="claude" />
+              <option name="model" value="deepseek-v4-pro[1M]" />
+              <option name="permissionMode" value="bypassPermissions" />
+              <option name="reasoningEffort" value="medium" />
+            </TabSessionState>
+          </value>
+        </entry>
       </map>
     </option>
-    <option name="tabCount" value="2" />
+    <option name="tabCount" value="4" />
   </component>
 </project>

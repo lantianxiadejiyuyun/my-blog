@@ -4,35 +4,44 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class checkConfig:
-    DB_PORT = os.environ.get('DB_PORT', '')
-    DB_USER = os.environ.get('DB_USER', '')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', '')
-    DB_HOST = os.environ.get('DB_HOST', '')
-    DB_NAME = os.environ.get('DB_NAME', '')
+class CheckConfig:
+    DB_PORT = os.getenv('DB_PORT', '')
+    DB_USER = os.getenv('DB_USER', '')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+    DB_HOST = os.getenv('DB_HOST', '')
+    DB_NAME = os.getenv('DB_NAME', '')
 
-    REDIS_HOST = os.environ.get('REDIS_HOST', '')
-    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD', '')
-    REDIS_DB = os.environ.get('REDIS_DB', '')
+    REDIS_HOST = os.getenv('REDIS_HOST', '')
+    REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', '')
+    REDIS_PORT = os.getenv('REDIS_PORT', '')
+    REDIS_DB = os.getenv('REDIS_DB', '')
 
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', '')
-    JWT_ACCESS_EXPIRES = os.environ.get('JWT_ACCESS_EXPIRES', '')
-    FLASK_ENV = os.environ.get('FLASK_ENV', '')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', '')
+    JWT_ACCESS_EXPIRES = os.getenv('JWT_ACCESS_EXPIRES', '')
 
+    FLASK_ENV = os.getenv('FLASK_ENV', '')
+    FLASK_PORT = os.getenv('FLASK_PORT', '')
+    FLASK_DEBUG = os.getenv('FLASK_DEBUG', '')
 
 def checkStart():
     required = [
-        ('DB_PORT',            checkConfig.DB_PORT),
-        ('DB_USER',            checkConfig.DB_USER),
-        ('DB_PASSWORD',        checkConfig.DB_PASSWORD),
-        ('DB_HOST',            checkConfig.DB_HOST),
-        ('DB_NAME',            checkConfig.DB_NAME),
-        ('REDIS_HOST',         checkConfig.REDIS_HOST),
-        ('REDIS_PASSWORD',     checkConfig.REDIS_PASSWORD),
-        ('JWT_SECRET_KEY',     checkConfig.JWT_SECRET_KEY),
-        ('JWT_ACCESS_EXPIRES', checkConfig.JWT_ACCESS_EXPIRES),
-        ('FLASK_ENV',          checkConfig.FLASK_ENV),
-        ('REDIS_DB',           checkConfig.REDIS_DB),
+        ('DB_PORT',            CheckConfig.DB_PORT),
+        ('DB_USER',            CheckConfig.DB_USER),
+        ('DB_PASSWORD',        CheckConfig.DB_PASSWORD),
+        ('DB_HOST',            CheckConfig.DB_HOST),
+        ('DB_NAME',            CheckConfig.DB_NAME),
+
+        ('REDIS_HOST',         CheckConfig.REDIS_HOST),
+        ('REDIS_PORT',         CheckConfig.REDIS_PORT),
+        ('REDIS_PASSWORD',     CheckConfig.REDIS_PASSWORD),
+        ('REDIS_DB',           CheckConfig.REDIS_DB),
+
+        ('JWT_SECRET_KEY',     CheckConfig.JWT_SECRET_KEY),
+        ('JWT_ACCESS_EXPIRES', CheckConfig.JWT_ACCESS_EXPIRES),
+
+        ('FLASK_ENV',          CheckConfig.FLASK_ENV),
+        ('FLASK_PORT',         CheckConfig.FLASK_PORT),
+        ('FLASK_DEBUG',        CheckConfig.FLASK_DEBUG),
     ]
 
     missing = [name for name, value in required if not value]
