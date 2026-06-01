@@ -1,29 +1,100 @@
-from app import db
 from datetime import datetime
+from app.extensions import db
 
-# User 表
+# ============================================================
+# 文章-标签 多对多关联表
+# ============================================================
+
+article_tags = db.Table('article_tags',
+    db.Column('article_id', db.Integer, db.ForeignKey('articles.id'), primary_key=True),  # 文章ID
+    db.Column('tag_id', db.Integer, db.ForeignKey('tags.id'), primary_key=True),           # 标签ID
+)
+
+# ============================================================
+# User 用户表
+# ============================================================
+
 class User(db.Model):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    email = db.Column(db.String(100))
-    avatar = db.Column(db.String(500))
-    bio = db.Column(db.String(500))
-    role = db.Column(db.String(20), default='user')
-    status = db.Column(db.SmallInteger, default=1)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    username    = db.Column(db.String(50), unique=True, nullable=False)        # 用户名，唯一，不能为空
+    password    = db.Column(db.String(200), nullable=False)                    # bcrypt 加密后的密码
+    email       = db.Column(db.String(100))                                   # 邮箱
+    avatar      = db.Column(db.String(500))                                   # 头像URL
+    bio         = db.Column(db.String(500))                                   # 个人简介
+    role        = db.Column(db.String(20), default='user')                    # 角色：serveradmin / admin / user
+    status      = db.Column(db.SmallInteger, default=1)                       # 1=正常 0=禁用
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow)             # 创建时间
+    updated_at  = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # 更新时间
 
-    # id          # 自增主键，唯一标识每个用户，1 2 3 自动往下排
-    # username    # 用户名，最长50字符，不能重复不能为空，登录用
-    # password    # bcrypt加密后的密码串，最长200字符，不能为空
-    # email       # 邮箱，可选
-    # avatar      # 头像url，存的是图片链接地址，最长500字符
-    # bio         # 个人简介/签名，最长500字符
-    # role        # 角色：serveradmin / admin / user，默认新注册是user
-    # status      # 2=禁言（约等于） 1=正常 0=禁用 ，存小整数省空间
-    # created_at  # 创建时间，插入行时自动填当前时间
-    # updated_at  # 更新时间，每次修改行自动更新为当前时间
+    articles = db.relationship('Article', backref='author', lazy='dynamic')   # 用户写的文章
+    comments = db.relationship('Comment', backref='user', lazy='dynamic')     # 用户发表的评论
 
+
+# ============================================================
+# Article 文章表
+# ============================================================
+
+class Article(db.Model):
+    __tablename__ = 'articles'
+
+    id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    title       = db.Column(db.String(200), nullable=False)                    # 标题
+    content     = db.Column(db.Text)                                           # 正文（Markdown）
+    summary     = db.Column(db.String(500))                                    # 摘要
+    cover       = db.Column(db.String(500))                                    # 封面图URL
+    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))        # 所属分类
+    author_id   = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 作者
+    status      = db.Column(db.SmallInteger, default=0)                        # 0=草稿 1=已发布
+    view_count  = db.Column(db.Integer, default=0)                             # 浏览量
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow)              # 创建时间
+    updated_at  = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # 更新时间
+
+    tags     = db.relationship('Tag', secondary=article_tags, backref='articles')  # 多对多标签
+    comments = db.relationship('Comment', backref='article', lazy='dynamic')       # 文章下的评论
+
+
+# ============================================================
+# Category 分类表
+# ============================================================
+
+class Category(db.Model):
+    __tablename__ = 'categories'
+
+    id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    name        = db.Column(db.String(50), unique=True, nullable=False)        # 分类名，唯一
+    description = db.Column(db.String(200))                                    # 分类描述
+
+    articles = db.relationship('Article', backref='category', lazy='dynamic')  # 该分类下的文章
+
+
+# ============================================================
+# Tag 标签表
+# ============================================================
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+
+    id   = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    name = db.Column(db.String(50), unique=True, nullable=False)        # 标签名，唯一
+
+
+# ============================================================
+# Comment 评论表
+# ============================================================
+
+class Comment(db.Model):
+    __tablename__ = 'comments'
+
+    id         = db.Column(db.Integer, primary_key=True, autoincrement=True)   # 自增主键
+    article_id = db.Column(db.Integer, db.ForeignKey('articles.id'), nullable=False)  # 所属文章
+    user_id    = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # 登录用户（空=游客）
+    nickname   = db.Column(db.String(50))                                      # 游客昵称
+    email      = db.Column(db.String(100))                                     # 邮箱
+    content    = db.Column(db.Text, nullable=False)                            # 评论内容
+    parent_id  = db.Column(db.Integer, db.ForeignKey('comments.id'), nullable=True)  # 回复的评论ID（空=顶级评论）
+    status     = db.Column(db.SmallInteger, default=0)                         # 0=待审 1=通过 2=拒绝
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)               # 创建时间
+
+    replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')  # 子回复

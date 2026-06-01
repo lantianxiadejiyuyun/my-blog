@@ -238,3 +238,21 @@ def index():
 ```
 
 ## 5、关于路由守卫  （过会写）
+
+## 6、关于上面的代码会导致循环导入问题
+
+修改之前的启动链子
+
+```py
+main.py
+	—> from app import creat_app # 开始加载 app/__init__.py
+    	-> from.public 			 # 加载public/ init.py
+        	-> from .blog 		 # 加载blog.py 其中会需要导入 db  但是db 此时还有没有初始化
+            	-> from app import db #  此处报错
+```
+
+Deep对这个错误如下表述
+
+根因就是一句话：blog.py 找 db 的时候，db = SQLAlchemy() 这行代码还没被执行到。
+
+解法也简单：把 db 从链条的末端（__init__.py）移到链条的最前端（extensions.py），让它成为第一个准备好了的东西。

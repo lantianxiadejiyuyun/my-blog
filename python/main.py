@@ -11,8 +11,8 @@ from utils import checkStart, logger as env_logger
 
 # Flask 核心程序
 from app import create_app
-
-
+from app.extensions import db
+from app.models import User, Article, Category, Tag, Comment
 
 # 检查环境变量
 if not checkStart():
@@ -28,6 +28,10 @@ class FlaskConfig :
 app = create_app()
 
 
+# 创建表
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    app.run(debug= FlaskConfig.FLASK_DEBUG,port=int (FlaskConfig.FLASK_PORT));
+    app.run(debug= FlaskConfig.FLASK_DEBUG,port=int(FlaskConfig.FLASK_PORT))
 
