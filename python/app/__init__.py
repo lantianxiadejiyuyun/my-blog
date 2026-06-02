@@ -1,10 +1,11 @@
-# 统一注册
+# 项目入口
 from flask_cors import CORS
 from flask import Flask
 
 from .public import blueprints as public_bps
 from .config import Config
 from .extensions import db
+from .errors import register_error_handlers
 
 
 API_PREFIX = '/api'
@@ -20,6 +21,7 @@ def create_app():
 
     db.init_app(app)
     register_blueprints(app)
+    register_error_handlers(app)
     CORS(app)
 
     return app

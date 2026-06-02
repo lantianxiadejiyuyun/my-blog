@@ -1,6 +1,6 @@
 import os
 
-class Config :
+class Config:
     # Mysql
     DB_HOST = os.environ.get('DB_HOST')
     DB_PORT = os.environ.get('DB_PORT')
@@ -8,10 +8,14 @@ class Config :
     DB_NAME = os.environ.get('DB_NAME')
     DB_PASSWORD = os.environ.get('DB_PASSWORD')
 
-    # SQLAlchemy 链接 关键配置链接
-    SQLALCHEMY_DATABASE_URI =  f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}" f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}" f"?charset=utf8mb4"
+    # SQLAlchemy 连接
+    SQLALCHEMY_DATABASE_URI = (
+        f"mysql+pymysql://{os.environ.get('DB_USER')}:{os.environ.get('DB_PASSWORD')}"
+        f"@{os.environ.get('DB_HOST')}:{os.environ.get('DB_PORT')}/{os.environ.get('DB_NAME')}"
+        f"?charset=utf8mb4"
+    )
 
-    # Reids
+    # Redis
     REDIS_HOST = os.environ.get('REDIS_HOST')
     REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
     REDIS_PORT = os.environ.get('REDIS_PORT')
