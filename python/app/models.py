@@ -98,3 +98,20 @@ class Comment(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)               # 创建时间
 
     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')  # 子回复
+
+
+# ============================================================
+# FriendLink 友链表
+# ============================================================
+
+class FriendLink(db.Model):
+    __tablename__ = 'friend_links'
+
+    id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    name        = db.Column(db.String(100), nullable=False)                    # 网站名称
+    url         = db.Column(db.String(500), nullable=False)                    # 链接地址
+    description = db.Column(db.String(300))                                    # 站点描述
+    logo        = db.Column(db.String(500))                                    # logo/头像 URL
+    sort_order  = db.Column(db.Integer, default=0)                             # 排序（越小越靠前）
+    status      = db.Column(db.SmallInteger, default=1)                        # 1=显示 0=隐藏
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow)              # 创建时间

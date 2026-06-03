@@ -206,6 +206,18 @@ access_token 到期 → POST /api/auth/refresh 用 refresh_token 换新
 | status | TINYINT | 0=待审 1=通过 2=拒绝 |
 | created_at | DATETIME | |
 
+### friend_links
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | INT PK | 自增 |
+| name | VARCHAR(100) | 网站名称 |
+| url | VARCHAR(500) | 链接地址 |
+| description | VARCHAR(300) | 站点描述 |
+| logo | VARCHAR(500) | logo/头像 URL |
+| sort_order | INT | 排序（越小越靠前） |
+| status | TINYINT | 1=显示 0=隐藏 |
+| created_at | DATETIME | 创建时间 | |
+
 ---
 
 ## API 接口文档

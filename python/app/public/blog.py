@@ -1,18 +1,15 @@
 from flask import Blueprint, jsonify, request
-from app.sql.mysqls.blog import paginate,get_article_list
-
+from app.sql.mysqls.blog import get_blog_list_from_page
 blog = Blueprint('blog', __name__)
 
 # 带分页的首页博客list
 @blog.route('/list')
-def list():
-    page = request.args.get('page', 1, type=int)
-    total = request.args.get('total', 10, type=int)
-    page_size = request.args.get('page_size', 10, type=int)
+def page_list():
+    page = request.args.get('page', '1')
+    page_size = request.args.get('page_size', '10')
 
-    query = paginate(get_article_list,page,total)
-
-
+    result = get_blog_list_from_page(page, page_size)
     return jsonify({
-        'status': query,
+        'status': 'ok',
+        'data': result,
     })
