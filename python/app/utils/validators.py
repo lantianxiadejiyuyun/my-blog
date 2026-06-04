@@ -1,10 +1,10 @@
 # ============================================================
-# app/validators.py — 请求参数校验
+# app/utils/validators.py — 请求参数校验
 # ============================================================
 #
 # 使用示例:
 #
-#   from app.validators import check, check_type, check_range, check_length
+#   from app.utils.validators import check, check_type, check_range, check_length
 #
 #   # ---- 统一校验 ----
 #   ok, err = check('5', type='int', min_val=1, max_val=10)
@@ -15,6 +15,12 @@
 #
 #   ok, err = check(200, type='int', max_val=100)
 #   # → (False, '值不能大于 100')
+#
+#   ok, err = check(None, required=True, name='title')
+#   # → (False, 'title: 不能为空')
+#
+#   ok, err = check('  ', type='str', not_blank=True, name='keyword')
+#   # → (False, 'keyword: 不能为空白')
 #
 #   ok, err = check('hello@a.com', type='email')
 #   # → (True, None)
@@ -54,6 +60,24 @@ def _is_float_str(v):
         return True
     except ValueError:
         return False
+
+
+def _is_empty(value):
+    """判空：None、空字符串、空列表/元组、空字典/集合 都算空"""
+    if value is None:
+        return True
+    if isinstance(value, str) and value == '':
+        return True
+    if hasattr(value, '__len__') and len(value) == 0:
+        return True
+    return False
+
+
+def _is_blank(value):
+    """判空白：字符串为空或全是空白字符"""
+    if not isinstance(value, str):
+        return False
+    return value.strip() == ''
 
 
 def check_type(value, type_name):
@@ -118,17 +142,36 @@ def check_length(value, min_len=None, max_len=None):
 
 
 def check(value, type=None, min_val=None, max_val=None, min_len=None, max_len=None,
-          enum=None, regex=None, validator=None, name=None):
+          enum=None, regex=None, validator=None, name=None, required=False, not_blank=False):
     """统一校验入口，返回 (is_valid, error_msg)
 
     所有参数都是可选的，传了就校验，不传就跳过。
     传了 name 则错误信息自动带上参数名前缀，格式: "{name}: 错误原因"
+
+    参数:
+        required   — True 则值不能为 None / '' / [] / {}
+        not_blank  — True 则字符串不能为空白（仅空格、制表符等）
+        type       — 期望类型: 'int'|'float'|'bool'|'str'|'list'|'dict'|'email'|'url'
+        min_val    — 数值最小值
+        max_val    — 数值最大值
+        min_len    — 字符串/列表最小长度
+        max_len    — 字符串/列表最大长度
+        enum       — 白名单列表，value 必须在其中
+        regex      — 正则表达式字符串
+        validator  — 自定义校验函数 (value) -> (bool, str)
+        name       — 参数名，用于错误信息前缀
 
     返回:
         (True, None)        — 全部通过
         (False, '错误信息')  — 某项未通过
 
     示例:
+        >>> check(None, required=True, name='title')
+        (False, 'title: 不能为空')
+
+        >>> check('  ', type='str', not_blank=True, name='keyword')
+        (False, 'keyword: 不能为空白')
+
         >>> check('abc', type='int', name='page')
         (False, 'page: 类型错误，期望 int')
 
@@ -136,6 +179,13 @@ def check(value, type=None, min_val=None, max_val=None, min_len=None, max_len=No
         (False, 'page_size: 值不能大于 100')
     """
     label = f'{name}: ' if name else ''
+
+    # 0. 非空校验（required / not_blank 放在最前面，优先级最高）
+    if required and _is_empty(value):
+        return False, f'{label}不能为空'
+
+    if not_blank and _is_blank(value):
+        return False, f'{label}不能为空白'
 
     # 1. 类型校验
     if type is not None:
@@ -195,7 +245,8 @@ def _cast(value, type_name):
 
 
 def check_or_raise(value, type=None, min_val=None, max_val=None, min_len=None, max_len=None,
-                   enum=None, regex=None, validator=None, name=None, error_code=1001):
+                   enum=None, regex=None, validator=None, name=None, required=False, not_blank=False,
+                   error_code=1001):
     """校验失败抛 AppError，校验通过返回转换后的值
 
     跟 check() 参数完全一样，区别是：
@@ -211,12 +262,19 @@ def check_or_raise(value, type=None, min_val=None, max_val=None, min_len=None, m
 
         >>> check_or_raise('abc', type='int', name='page')
         # → raise AppError(1001, 'page: 类型错误，期望 int')
+
+        >>> check_or_raise(None, required=True, name='title')
+        # → raise AppError(1001, 'title: 不能为空')
+
+        >>> check_or_raise('  ', type='str', not_blank=True, name='keyword')
+        # → raise AppError(1001, 'keyword: 不能为空白')
     """
-    from .errors import AppError
+    from app.utils.errors import AppError
 
     ok, err = check(value, type=type, min_val=min_val, max_val=max_val,
                     min_len=min_len, max_len=max_len,
-                    enum=enum, regex=regex, validator=validator, name=name)
+                    enum=enum, regex=regex, validator=validator,
+                    name=name, required=required, not_blank=not_blank)
     if not ok:
         raise AppError(code=error_code, message=err)
 

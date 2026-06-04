@@ -1,9 +1,9 @@
 # ============================================================
-# app/errors.py — 全局异常处理
+# app/utils/errors.py — 全局异常处理
 # ============================================================
 from werkzeug.exceptions import HTTPException
 
-from .response import fail
+from app.utils.response import fail
 
 
 # ========== 自定义业务异常 ==========

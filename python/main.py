@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 # 加载env环境 强制覆盖
 load_dotenv(override=True)
 
-from utils import check_start, logger as env_logger
+from app.utils.startup import check_start, logger as env_logger
 
 # Flask 核心程序
 from app import create_app

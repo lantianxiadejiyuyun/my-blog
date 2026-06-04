@@ -5,7 +5,7 @@ from flask import Flask
 from .public import blueprints as public_bps
 from .config import Config
 from .extensions import db
-from .errors import register_error_handlers
+from .utils.errors import register_error_handlers
 
 
 API_PREFIX = '/api'
