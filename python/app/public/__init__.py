@@ -1,9 +1,11 @@
 from .login import login
-from .health import health
+from .system import system
 from .blog import blog
+from .tag import tags
 
 blueprints = [
-    (health, '/health'),
+    (system, '/system'),
     (login, '/login'),
     (blog, '/blog'),
+    (tags, '/tags'),
 ]

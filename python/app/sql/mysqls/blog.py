@@ -1,6 +1,7 @@
 from app.utils.validators import check_or_raise
 from app.models import Article, Tag, Comment
 from app.sql.mysqls.comment import get_comments_from_article
+from app.utils.format_datetime import format_datetime
 from app.utils.errors import AppError
 
 # 查询 根据页码—每页条数-查询 博客列表
@@ -45,8 +46,9 @@ def get_blog_detail_from_id(id):
         'content': article.content,
         'cover': article.cover,
         'view_count': article.view_count,
-        'created_at': article.created_at,
-        'updated_at': article.updated_at,
+        'created_at': format_datetime(article.created_at),
+        'updated_at': format_datetime(article.updated_at),
         'tags': tags ,
         'comments':comments
     }
+

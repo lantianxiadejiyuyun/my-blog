@@ -1,11 +1,11 @@
 import psutil
 from flask import Blueprint, jsonify
 
-health = Blueprint('health', __name__)
+system = Blueprint('system', __name__)
 
 
 # 检查cpu使用率 内存 硬盘
-@health.route('/check')
+@system.route('/info', methods=['GET'])
 def check():
     return jsonify({
         'cpu': {

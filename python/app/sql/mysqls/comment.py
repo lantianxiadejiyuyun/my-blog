@@ -1,5 +1,5 @@
 from app.models import Comment
-from app.utils import format_datetime
+from app.utils.format_datetime import format_datetime
 
 
 # 根据博客信息 获取对应的评论
