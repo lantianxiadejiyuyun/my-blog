@@ -1,4 +1,7 @@
 from datetime import datetime
+
+import bcrypt
+
 from app.extensions import db
 
 # ============================================================
@@ -16,6 +19,12 @@ article_tags = db.Table('article_tags',
 
 class User(db.Model):
     __tablename__ = 'user'
+
+    def set_password(self, password):
+        self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    def check_password(self, password):
+        return bcrypt.checkpw(password.encode('utf-8'), self.password.encode('utf-8'))
 
     id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
     username    = db.Column(db.String(50), unique=True, nullable=False)        # 用户名，唯一，不能为空

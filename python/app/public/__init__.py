@@ -1,11 +1,11 @@
-from .login import login
+from .user import user
 from .system import system
 from .blog import blog
 from .tag import tags
 
 blueprints = [
     (system, '/system'),
-    (login, '/login'),
+    (user, '/user'),
     (blog, '/blog'),
     (tags, '/tags'),
 ]

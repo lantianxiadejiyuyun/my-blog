@@ -3,6 +3,7 @@ from app.models import Article, Tag, Comment
 from app.sql.mysqls.comment import get_comments_from_article
 from app.utils.format_datetime import format_datetime
 from app.utils.errors import AppError
+from app.extensions import db
 
 # 查询 根据页码—每页条数-查询 博客列表
 def get_blog_list_from_page(page, page_size):
@@ -16,7 +17,17 @@ def get_blog_list_from_page(page, page_size):
     data = query.paginate(page=page, per_page=page_size, error_out=False)
 
     return {
-        'list': [{'id': item.id, 'title': item.title} for item in data.items],
+        'list': [{
+            'id': item.id,
+            'title': item.title,
+            'cover': item.cover,
+            'category_id': item.category_id,
+            'author_id': item.author_id,
+            'view_count': item.view_count,
+            'created_at': format_datetime(item.created_at),
+            'updated_at': format_datetime(item.updated_at),
+            'tags': [{'id':tags_item.id,'name':tags_item.name} for tags_item in item.tags],
+        } for item in data.items],
         'page': data.page,
         'pages': data.pages,
         'total': data.total,
@@ -39,6 +50,8 @@ def get_blog_detail_from_id(id):
 
     comments = get_comments_from_article(article)
 
+    add_blog_read(article)
+
     return {
         'id': article.id,
         'title': article.title,
@@ -48,7 +61,12 @@ def get_blog_detail_from_id(id):
         'view_count': article.view_count,
         'created_at': format_datetime(article.created_at),
         'updated_at': format_datetime(article.updated_at),
-        'tags': tags ,
+        'tags': tags,
         'comments':comments
     }
 
+# 更新 阅读量 根据博客id 新增阅读量
+def add_blog_read(article):
+
+   article.view_count += 1
+   db.session.commit()
