@@ -17,10 +17,17 @@ class Config:
 
     # Redis
     REDIS_HOST = os.environ.get('REDIS_HOST')
-    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
-    REDIS_PORT = os.environ.get('REDIS_PORT')
-    REDIS_DB = os.environ.get('REDIS_DB')
+    REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or None
+    REDIS_PORT = int(os.environ.get('REDIS_PORT'))
+
+    REDIS_DB_SESSION = os.environ.get('REDIS_DB_SESSION')
+    REDIS_DB_CACHE = os.environ.get('REDIS_DB_CACHE')
+    REDIS_DB_RATELIMIT = os.environ.get('REDIS_DB_RATELIMIT')
+    REDIS_DB_QUEUE = os.environ.get('REDIS_DB_QUEUE')
 
     # JWT
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     JWT_ACCESS_EXPIRES = os.environ.get('JWT_ACCESS_EXPIRES')
+
+    # 用户最大校验次数
+    MAX_LOGIN_ATTEMPTS = int(os.environ.get('MAX_LOGIN_ATTEMPTS'))

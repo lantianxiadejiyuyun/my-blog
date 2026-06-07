@@ -6,7 +6,7 @@ from .public import blueprints as public_bps
 from .config import Config
 from .extensions import db
 from .utils.errors import register_error_handlers
-
+from .extensions import init_redis
 
 API_PREFIX = '/api'
 
@@ -22,6 +22,7 @@ def create_app():
     db.init_app(app)
     register_blueprints(app)
     register_error_handlers(app)
+    init_redis(app)
     CORS(app)
 
     return app

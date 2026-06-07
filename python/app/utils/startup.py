@@ -15,8 +15,14 @@ def check_start():
         ('DB_NAME', os.environ.get('DB_NAME')),
         ('REDIS_HOST', os.environ.get('REDIS_HOST')),
         ('REDIS_PORT', os.environ.get('REDIS_PORT')),
+
+        # 按需要开启
         ('REDIS_PASSWORD', os.environ.get('REDIS_PASSWORD')),
-        ('REDIS_DB', os.environ.get('REDIS_DB')),
+
+        ('REDIS_DB_SESSION', os.environ.get('REDIS_DB_SESSION')),
+        ('REDIS_DB_CACHE', os.environ.get('REDIS_DB_CACHE')),
+        ('REDIS_DB_RATELIMIT', os.environ.get('REDIS_DB_RATELIMIT')),
+        ('REDIS_DB_QUEUE', os.environ.get('REDIS_DB_QUEUE')),
         ('JWT_SECRET_KEY', os.environ.get('JWT_SECRET_KEY')),
         ('JWT_ACCESS_EXPIRES', os.environ.get('JWT_ACCESS_EXPIRES')),
         ('FLASK_ENV', os.environ.get('FLASK_ENV')),
