@@ -34,6 +34,7 @@ class User(db.Model):
     bio         = db.Column(db.String(500))                                   # 个人简介
     role        = db.Column(db.String(20), default='user')                    # 角色：serveradmin / admin / user
     status      = db.Column(db.SmallInteger, default=1)                       # 1=正常 0=禁用
+    check_number = db.Column(db.SmallInteger, default=0)                      # 连续登录失败次数
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)             # 创建时间
     updated_at  = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # 更新时间
 
@@ -124,3 +125,21 @@ class FriendLink(db.Model):
     sort_order  = db.Column(db.Integer, default=0)                             # 排序（越小越靠前）
     status      = db.Column(db.SmallInteger, default=1)                        # 1=显示 0=隐藏
     created_at  = db.Column(db.DateTime, default=datetime.utcnow)              # 创建时间
+
+
+# ============================================================
+# Carousel 首页轮播图表
+# ============================================================
+
+class Carousel(db.Model):
+    __tablename__ = 'carousels'
+
+    id          = db.Column(db.Integer, primary_key=True, autoincrement=True)  # 自增主键
+    title       = db.Column(db.String(100), nullable=False)                    # 轮播图标题
+    image_url   = db.Column(db.String(500), nullable=False)                    # 图片URL
+    link_url    = db.Column(db.String(500))                                    # 点击跳转链接
+    description = db.Column(db.String(300))                                    # 描述文字
+    sort_order  = db.Column(db.Integer, default=0)                             # 排序（越小越靠前）
+    status      = db.Column(db.SmallInteger, default=1)                        # 1=显示 0=隐藏
+    created_at  = db.Column(db.DateTime, default=datetime.utcnow)              # 创建时间
+    updated_at  = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # 更新时间

@@ -22,6 +22,7 @@ def check_start():
         ('FLASK_ENV', os.environ.get('FLASK_ENV')),
         ('FLASK_PORT', os.environ.get('FLASK_PORT')),
         ('FLASK_DEBUG', os.environ.get('FLASK_DEBUG')),
+        ('MAX_LOGIN_ATTEMPTS',os.environ.get('MAX_LOGIN_ATTEMPTS')),
     ]
 
     missing = [name for name, value in required if not value]

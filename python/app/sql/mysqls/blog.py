@@ -1,5 +1,5 @@
 from app.utils.validators import check_or_raise
-from app.models import Article, Tag, Comment
+from app.models import Article
 from app.sql.mysqls.comment import get_comments_from_article
 from app.utils.format_datetime import format_datetime
 from app.utils.errors import AppError
@@ -35,14 +35,15 @@ def get_blog_list_from_page(page, page_size):
     }
 
 # 查询 根据博客id 获取 对应博客 / tags / 评论
-def get_blog_detail_from_id(id):
-    id = check_or_raise(id, type='int', min_val=1, name='id')
+def get_blog_detail_from_id(tag):
+    id = check_or_raise(tag, type='int', min_val=1, name='id')
 
     query = Article.query
     query = query.filter(Article.id == id)
     query = query.filter(Article.status == 1)
 
     article = query.first()
+
     if not article:
         raise AppError(404,'未找到这个博客，请看看其他的博客吧',404)
 

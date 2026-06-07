@@ -77,6 +77,7 @@ python/
 │   ├── categories.py    # 分类 API
 │   ├── tags.py          # 标签 API
 │   ├── comments.py      # 评论 API
+│   ├── carousels.py     # 轮播图 API
 │   └── users.py         # 用户管理 API
 ├── init_db.py           # 建表 + 初始账号
 ├── requirements.txt
@@ -218,6 +219,19 @@ access_token 到期 → POST /api/auth/refresh 用 refresh_token 换新
 | status | TINYINT | 1=显示 0=隐藏 |
 | created_at | DATETIME | 创建时间 | |
 
+### carousels
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | INT PK | 自增 |
+| title | VARCHAR(100) | 轮播图标题 |
+| image_url | VARCHAR(500) | 图片URL |
+| link_url | VARCHAR(500) | 点击跳转链接 |
+| description | VARCHAR(300) | 描述文字 |
+| sort_order | INT | 排序（越小越靠前） |
+| status | TINYINT | 1=显示 0=隐藏 |
+| created_at | DATETIME | 创建时间 |
+| updated_at | DATETIME | 更新时间 |
+
 ---
 
 ## API 接口文档
@@ -291,6 +305,15 @@ access_token 到期 → POST /api/auth/refresh 用 refresh_token 换新
 | PUT | /api/users/:id/status | serveradmin |
 | GET | /api/users/me | user+ |
 | PUT | /api/users/me | user+ |
+
+### 轮播图 carousels
+
+| 方法 | 路径 | 权限 | 说明 |
+|------|------|------|------|
+| GET | /api/carousels | 公开 | 获取所有轮播图（按 sort_order 排序） |
+| POST | /api/carousels | admin+ | 创建轮播图 |
+| PUT | /api/carousels/:id | admin+ | 编辑轮播图 |
+| DELETE | /api/carousels/:id | admin+ | 删除轮播图 |
 
 ---
 
