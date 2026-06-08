@@ -2,9 +2,15 @@ from datetime import datetime, timezone
 import jwt
 from app.config import Config
 import os
+import uuid
+from app.utils.errors import AppError
+
 
 # 检查token
-def check_token():
+def check_token(token):
+
+    jwt_token = jwt.decode(token, Config.JWT_SECRET_KEY, algorithm=['HS256'])
+    print('jwt',jwt_token)
 
     return
 
@@ -17,25 +23,21 @@ def save_token():
 def make_token(user):
     """ 生成用户 totken """
     now = datetime.now(timezone.utc)
+
     payload = {
         'user_id': user.id,
         'username': user.username,
-        'role': user.role,
-        'iat': now,
-        'exp': int(os.environ.get('JWT_ACCESS_EXPIRES') or 1800)
+        'jti': mark_uuid(), # 构建uuid
+        'role': user.role, # 权限
+        'iat': now,  # 签发时间
+        'exp': int(os.environ.get('JWT_ACCESS_EXPIRES') or 1800) # 过期延后
     }
 
     return jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm='HS256')
 
-def parse_token(token):
-    """校验 token，成功返回 payload，失败抛 jwt 异常"""
-    return jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=['HS256'])
-
-
+# 长效token uuid
 def mark_uuid():
-
-    return 
-
+    return str(uuid.uuid4())
 
 # 重新保存token
 def refresh_token():

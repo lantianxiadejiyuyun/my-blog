@@ -3,6 +3,7 @@ from app.utils.format_datetime import format_datetime
 from app.utils.errors import AppError
 from app.extensions import db
 from app.config import Config
+from app.utils.response import ApiResponse
 
 def get_user_login(username, password):
 
@@ -14,8 +15,10 @@ def get_user_login(username, password):
 
     user = User.query.filter_by(username=username).first()
 
+    print(user)
+
     if not user:
-        return None
+        raise AppError(code=ApiResponse.USER_NOT_EXIST,message='用户不存在,请检查用户名后再试')
 
     # 账号被禁用
     if user.status == 0:
