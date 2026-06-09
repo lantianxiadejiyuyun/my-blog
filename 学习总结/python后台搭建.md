@@ -346,3 +346,205 @@ def register_error_handlers(app):
         app.logger.exception('未捕获的异常')  # 这个记日志很重要，不然线上炸了都不知道
         return fail(500, '服务器内部错误，请稍后重试', http_status=500)
 ```
+
+## 8、关于JWT  Token 部分
+
+之前是打算将代码按照层进行分级 即 路由层 数据库交互层 工具层 进行分级，后来越进行越感觉不对劲，怎么这代码越写越乱，找了yupiskill 的deep 进行了下分析 发现果然还是过度封装了 导致代码质量提不了多少，但是各种导包，用包越来越频繁，业务逻辑也显得十分混乱了。
+
+现在把代码完全使用一个文件进行 Token的校验，生成，重新签发，删除等操作 方便快速使用。
+
+### JWT的生成
+
+```py
+#使用 uuid库来生成token的 jti 也就是用于存放到Redis 的 键 后面删除，修改查找的也是他
+#时间处理 ， 这个时间从env环境中获取 并且要记得使用 int(转换类型)
+
+def make_token(user):
+    """生成 JWT + 写入 Redis，返回 {jti, token}"""
+    jti = str(uuid.uuid4())
+    now = int(time.time())
+    expire_seconds = int(Config.JWT_ACCESS_EXPIRES)
+
+    payload = {
+        'user_id': user.id,
+        'username': user.username,
+        'jti': jti,
+        'role': user.role,
+        'iat': now,
+        'exp': now + expire_seconds,
+    }
+
+    token = jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm='HS256')
+
+    # 写入 Redis，过期比 JWT 早 20 秒留缓冲 这个部分是防止token实际签发将要过期，但是实际上Redis上已经过期了 导致的业务错误等 所以先设计Redis中的过期 
+    redis = get_redis_session()
+    redis.set(jti, token, ex=expire_seconds - 20)
+
+    # 验证写入成功
+    if not redis.get(jti):
+        raise AppError(code=ApiResponse.TOKEN_IS_NOT_SAVE, message='Token 保存到 Redis 失败')
+
+    return {'jti': jti, 'token': token}
+
+```
+
+
+### JWT的校验
+
+```py
+def verify_token(token):
+    """验证 JWT：成功返回 payload，过期/无效/被吊销 抛 AppError"""
+    try:
+        payload = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=['HS256'])
+    except jwt.ExpiredSignatureError:
+        raise AppError(code=ApiResponse.TOKEN_EXPIRED, message='Token 过期了，请重新登录')
+    except jwt.InvalidTokenError:
+        raise AppError(code=ApiResponse.TOKEN_INVALID, message='Token 无效')
+
+    # 检查是否已被服务端吊销（Redis 中是否还存在）
+    jti = payload.get('jti')
+    if jti and not get_redis_session().get(jti):
+        raise AppError(code=ApiResponse.TOKEN_REVOKED, message='Token 已被注销，请重新登录')
+
+    return payload
+```
+
+### JWT重新签发
+
+```py
+
+#  更新token
+def refresh_token(old_token):
+    """用旧 token 换新 token：验证通过后发新token 吊销旧token"""
+    payload = verify_token(old_token)
+
+    
+    # 构造一个简易 user 对象给 make_token
+    # 这个User 是从Token中解码出来的
+    class _UserProxy:
+        pass
+
+    user = _UserProxy()
+    user.id = payload['user_id']
+    user.username = payload['username']
+    user.role = payload['role']
+
+    # 发新 token
+    result = make_token(user)
+
+    # 吊销旧 token
+    old_jti = payload.get('jti')
+    if old_jti:
+        revoke_token(old_jti)
+
+    return result
+
+```
+
+### JWT的注销
+
+```py
+def revoke_token(jti):
+    """注销 token：从 Redis 删除 返回 True/False"""
+    redis = get_redis_session()
+    redis.delete(jti)
+    return redis.get(jti) is None
+```
+
+## 9、关于Redis 
+
+他是很简单的一个键值对存储服务器 我对他的使用还不是十分深入，后面还需要深度学习
+
+我在env中使用了他其中的三个库（其实用一个也可以，就是我多少有点代码洁癖）
+
+大体上使用和Mysql逻辑也差不了多少 但是相关的api要简单不少 毕竟就是个键值对服务器嘛~
+
+```py
+#注册Redis
+import redis
+
+
+def _make_redis(host, port, password, db, **kwargs):
+    """内部工具：根据参数创建 Redis 连接"""
+    return redis.Redis(
+        host=host,
+        port=port,
+        password=password,
+        db=db,
+        decode_responses=True,
+        socket_connect_timeout=5,
+        **kwargs,
+    )
+
+
+# ---- 三个 Redis 连接，懒加载 ----
+
+_redis_session = None
+_redis_cache = None
+_redis_ratelimit = None
+
+
+def get_redis_session():
+    """获取 session Redis 连接（懒加载）"""
+    global _redis_session
+    if _redis_session is None:
+        _redis_session = _make_redis(
+            Config.REDIS_HOST, Config.REDIS_PORT,
+            Config.REDIS_PASSWORD, int(Config.REDIS_DB_SESSION),
+        )
+    return _redis_session
+
+
+def get_redis_cache():
+    """获取 cache Redis 连接（懒加载）"""
+    global _redis_cache
+    if _redis_cache is None:
+        _redis_cache = _make_redis(
+            Config.REDIS_HOST, Config.REDIS_PORT,
+            Config.REDIS_PASSWORD, int(Config.REDIS_DB_CACHE),
+        )
+    return _redis_cache
+
+
+def get_redis_ratelimit():
+    """获取限流 Redis 连接（懒加载）"""
+    global _redis_ratelimit
+    if _redis_ratelimit is None:
+        _redis_ratelimit = _make_redis(
+            Config.REDIS_HOST, Config.REDIS_PORT,
+            Config.REDIS_PASSWORD, int(Config.REDIS_DB_RATELIMIT),
+        )
+    return _redis_ratelimit
+
+
+def init_redis(app=None):
+    """应用启动时预初始化所有 Redis 连接，提前发现连接问题"""
+    try:
+        get_redis_session().ping()
+        get_redis_cache().ping()
+        get_redis_ratelimit().ping()
+    except redis.ConnectionError as e:
+        raise RuntimeError(f'Redis 连不上，检查地址和密码: {e}')
+
+
+```
+
+
+
+
+
+```py
+# 存入
+redis().set(jti,'token',ex=1800) (键，值，过期时间)
+
+# 查找
+redis().get(jti)  #有就返回具体键值对，无就返回None
+
+#删除
+redis().delete(jti) 
+```
+
+
+
+
+
