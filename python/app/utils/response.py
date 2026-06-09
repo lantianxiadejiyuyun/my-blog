@@ -77,6 +77,7 @@ class ApiResponse:
     REFRESH_TOKEN_EXPIRED = 1205  # refresh_token 也过期了，需重新登录
     REFRESH_TOKEN_INVALID = 1206  # refresh_token 无效
     NOT_OWNER = 1207            # 不是资源所有者（只能操作自己的数据，如删除他人的评论）
+    TOKEN_IS_NOT_SAVE = 1208    # token 保存失败
 
     # ==================================================================
     # 20xx — 文章模块

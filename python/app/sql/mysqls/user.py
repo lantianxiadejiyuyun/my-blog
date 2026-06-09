@@ -15,8 +15,6 @@ def get_user_login(username, password):
 
     user = User.query.filter_by(username=username).first()
 
-    print(user)
-
     if not user:
         raise AppError(code=ApiResponse.USER_NOT_EXIST,message='用户不存在,请检查用户名后再试')
 

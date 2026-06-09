@@ -7,7 +7,7 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="ba9a07ce-9017-4c4f-a5b2-24753247fda6" />
+              <option name="sessionId" value="cef88528-0259-48f1-87cd-9aab489c016a" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="claude-sonnet-4-6" />
               <option name="permissionMode" value="bypassPermissions" />
@@ -19,7 +19,7 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="0fa351e3-83f6-464f-8e1b-c8aa9a16396f" />
+              <option name="sessionId" value="c18fba33-91b8-4f00-a639-8fbaccef13c4" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="claude-sonnet-4-6" />
               <option name="permissionMode" value="bypassPermissions" />
@@ -31,7 +31,7 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="d83da5db-f90b-4e50-8e9b-dbed10671645" />
+              <option name="sessionId" value="38a0d687-f1ed-4f10-95eb-5128232eff55" />
               <option name="cwd" value="$PROJECT_DIR$" />
               <option name="model" value="claude-sonnet-4-6" />
               <option name="permissionMode" value="bypassPermissions" />
