@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.utils.validators import check_or_raise
-from app.methods.token import make_token, verify_token, revoke_token
+from app.methods.token import make_token, verify_token, revoke_token, header_check_token
 from app.sql.mysqls.user import get_user_login
 
 user = Blueprint('user', __name__)

@@ -7,11 +7,10 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="cef88528-0259-48f1-87cd-9aab489c016a" />
+              <option name="sessionId" value="2dd14887-1569-478c-ac85-a1254d1f3b1d" />
               <option name="cwd" value="$PROJECT_DIR$" />
-              <option name="model" value="claude-sonnet-4-6" />
+              <option name="model" value="claude-opus-4-8[1m]" />
               <option name="permissionMode" value="bypassPermissions" />
-              <option name="reasoningEffort" value="medium" />
             </TabSessionState>
           </value>
         </entry>
@@ -19,9 +18,9 @@
           <value>
             <TabSessionState>
               <option name="provider" value="claude" />
-              <option name="sessionId" value="c18fba33-91b8-4f00-a639-8fbaccef13c4" />
+              <option name="sessionId" value="edecbb8b-755d-4f32-baec-2cab84bc9f06" />
               <option name="cwd" value="$PROJECT_DIR$" />
-              <option name="model" value="claude-sonnet-4-6" />
+              <option name="model" value="deepseek-v4-pro" />
               <option name="permissionMode" value="bypassPermissions" />
               <option name="reasoningEffort" value="medium" />
             </TabSessionState>
