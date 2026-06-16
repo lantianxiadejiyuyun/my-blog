@@ -351,76 +351,179 @@ def register_error_handlers(app):
 
 之前是打算将代码按照层进行分级 即 路由层 数据库交互层 工具层 进行分级，后来越进行越感觉不对劲，怎么这代码越写越乱，找了yupiskill 的deep 进行了下分析 发现果然还是过度封装了 导致代码质量提不了多少，但是各种导包，用包越来越频繁，业务逻辑也显得十分混乱了。
 
-现在把代码完全使用一个文件进行 Token的校验，生成，重新签发，删除等操作 方便快速使用。
+现在把代码完全使用一个文件进行 Token的校验，生成，重新签发，删除等操作 方便快速使用。后来又从单 Token 升级成了双 Token（access + refresh），下面按这个新版本来记。
 
-### JWT的生成
+### 从单 Token 到双 Token
+
+之前只签发一个 token，纠结点很矛盾：
+
+- 想安全 → 有效期要短（比如 15 分钟），但用户每 15 分钟就得重新登录，体验差
+- 想体验好 → 有效期拉长，可一旦泄露风险就大了
+
+双 Token 就是把一个 token 拆成两个职责分明的：
+
+- **access_token**：短效（15~30 分钟），每个请求带着它鉴权，泄露风险可控
+- **refresh_token**：长效（7~30 天），平时不传，只在 access 过期时拿它换新的 access
+
+效果就是 access 过期了用户无感续期，直到 refresh 也过期才需要重新登录。
+
+### 三个关键设计
+
+1. **payload 里带 `type` 字段**（`access` / `refresh`）
+   校验时强制校验类型，防止有人拿 refresh 当 access 用（或反过来）。这是双 token 最容易漏的安全点。
+
+2. **Redis 的 key 加前缀**
+   `access:{jti}` 和 `refresh:{jti}` 分开存，注销时不会误伤另一类，以后想做「按用户维度踢人下线」也方便。
+
+3. **内部抽公共函数去重**
+   access / refresh 的生成、校验、注销逻辑几乎一样，抽成 `_make_token` / `_verify_token` / `_revoke`，对外再暴露 `make_access_token` 这种具体的。既保持单文件，又不重复代码。
 
 ```py
-#使用 uuid库来生成token的 jti 也就是用于存放到Redis 的 键 后面删除，修改查找的也是他
-#时间处理 ， 这个时间从env环境中获取 并且要记得使用 int(转换类型)
+# key 前缀 + token 类型常量
+ACCESS_PREFIX = 'access:'
+REFRESH_PREFIX = 'refresh:'
 
-def make_token(user):
-    """生成 JWT + 写入 Redis，返回 {jti, token}"""
+ACCESS_TYPE = 'access'
+REFRESH_TYPE = 'refresh'
+
+# Redis TTL 比 JWT exp 短一点，让"登出 / 吊销"略早生效，留缓冲
+_REDIS_TTL_BUFFER = 20
+```
+
+### JWT 的生成
+
+内部公共函数（access / refresh 共用）：
+
+```py
+# uuid 生成 jti，就是存进 Redis 的键，后面注销 / 查找都靠它
+# 时间从 env 取，记得 int() 转一下类型
+def _make_token(user, token_type, expire_seconds, key_prefix):
     jti = str(uuid.uuid4())
     now = int(time.time())
-    expire_seconds = int(Config.JWT_ACCESS_EXPIRES)
 
     payload = {
         'user_id': user.id,
         'username': user.username,
         'jti': jti,
         'role': user.role,
+        'type': token_type,          # 关键：带类型，校验时防 refresh 当 access 用
         'iat': now,
         'exp': now + expire_seconds,
     }
 
     token = jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm='HS256')
 
-    # 写入 Redis，过期比 JWT 早 20 秒留缓冲 这个部分是防止token实际签发将要过期，但是实际上Redis上已经过期了 导致的业务错误等 所以先设计Redis中的过期 
+    # 写入 Redis 白名单，TTL 比 JWT 早 20 秒过期留缓冲
+    # 防止 token 实际还没到期、Redis 却先到期导致的业务错误，所以先让 Redis 早一点过期
     redis = get_redis_session()
-    redis.set(jti, token, ex=expire_seconds - 20)
+    key = key_prefix + jti
+    redis.set(key, token, ex=expire_seconds - _REDIS_TTL_BUFFER)
 
-    # 验证写入成功
-    if not redis.get(jti):
+    if not redis.get(key):
         raise AppError(code=ApiResponse.TOKEN_IS_NOT_SAVE, message='Token 保存到 Redis 失败')
 
     return {'jti': jti, 'token': token}
-
 ```
 
-
-### JWT的校验
+对外暴露两个，分别对应短 / 长有效期：
 
 ```py
-def verify_token(token):
-    """验证 JWT：成功返回 payload，过期/无效/被吊销 抛 AppError"""
+# 短效 access_token
+def make_access_token(user):
+    return _make_token(
+        user, token_type=ACCESS_TYPE,
+        expire_seconds=int(Config.JWT_ACCESS_EXPIRES),
+        key_prefix=ACCESS_PREFIX,
+    )
+
+# 长效 refresh_token
+def make_refresh_token(user):
+    return _make_token(
+        user, token_type=REFRESH_TYPE,
+        expire_seconds=int(Config.JWT_REFRESH_EXPIRES),
+        key_prefix=REFRESH_PREFIX,
+    )
+```
+
+> 登录的时候两个一起签发，一起返回给前端。
+
+### JWT 的校验
+
+校验做三件事：解码 JWT → 校验 type 是否匹配 → 查 Redis 白名单还在不在。
+
+```py
+def _verify_token(token, expect_type, key_prefix, err_expired, err_invalid):
     try:
         payload = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
-        raise AppError(code=ApiResponse.TOKEN_EXPIRED, message='Token 过期了，请重新登录')
+        raise AppError(code=err_expired, message='Token 过期了，请重新登录')
     except jwt.InvalidTokenError:
-        raise AppError(code=ApiResponse.TOKEN_INVALID, message='Token 无效')
+        raise AppError(code=err_invalid, message='Token 无效')
 
-    # 检查是否已被服务端吊销（Redis 中是否还存在）
+    # 类型必须匹配：refresh 不能当 access 用，反之亦然
+    if payload.get('type') != expect_type:
+        raise AppError(code=err_invalid, message='Token 类型不正确')
+
+    # Redis 白名单：key 不存在 = 已被吊销 / 登出
     jti = payload.get('jti')
-    if jti and not get_redis_session().get(jti):
+    if not jti or not get_redis_session().get(key_prefix + jti):
         raise AppError(code=ApiResponse.TOKEN_REVOKED, message='Token 已被注销，请重新登录')
 
     return payload
 ```
 
-### JWT重新签发
+对外两个，各自用对应的错误码（access 过期是 `TOKEN_EXPIRED`，refresh 过期是 `REFRESH_TOKEN_EXPIRED`）：
 
 ```py
+def verify_access_token(token):
+    return _verify_token(
+        token, expect_type=ACCESS_TYPE, key_prefix=ACCESS_PREFIX,
+        err_expired=ApiResponse.TOKEN_EXPIRED,
+        err_invalid=ApiResponse.TOKEN_INVALID,
+    )
 
-#  更新token
-def refresh_token(old_token):
-    """用旧 token 换新 token：验证通过后发新token 吊销旧token"""
-    payload = verify_token(old_token)
+def verify_refresh_token(token):
+    return _verify_token(
+        token, expect_type=REFRESH_TYPE, key_prefix=REFRESH_PREFIX,
+        err_expired=ApiResponse.REFRESH_TOKEN_EXPIRED,
+        err_invalid=ApiResponse.REFRESH_TOKEN_INVALID,
+    )
+```
 
-    
-    # 构造一个简易 user 对象给 make_token
-    # 这个User 是从Token中解码出来的
+### JWT 的注销
+
+注销就是从 Redis 白名单里删掉对应的 key。
+
+```py
+def _revoke(key_prefix, jti):
+    redis = get_redis_session()
+    redis.delete(key_prefix + jti)
+    return redis.get(key_prefix + jti) is None
+
+# 对外：两个具体的 + 一个通用的
+def revoke_access_token(jti):
+    return _revoke(ACCESS_PREFIX, jti)
+
+def revoke_refresh_token(jti):
+    return _revoke(REFRESH_PREFIX, jti)
+
+def revoke_token(jti):
+    """通用注销（不区分类型，两个前缀都清）：登出时只拿到 jti 就用它"""
+    return revoke_access_token(jti) and revoke_refresh_token(jti)
+```
+
+### JWT 的刷新（双 Token 的核心）
+
+这是双 token 真正发挥作用的地方：access 过期后，前端拿 refresh_token 来换新的 access。
+
+做法是**轮转**——每次刷新不只发新 access，还顺便发新 refresh、并把旧 refresh 吊销，保证每个 refresh 只能用一次。
+
+```py
+def refresh_token(old_refresh_token):
+    # 1. 先校验传进来的得是合法的 refresh_token
+    payload = verify_refresh_token(old_refresh_token)
+
+    # 2. token 里解码出用户信息，构造简易 user 对象喂给 make_*_token
     class _UserProxy:
         pass
 
@@ -429,27 +532,55 @@ def refresh_token(old_token):
     user.username = payload['username']
     user.role = payload['role']
 
-    # 发新 token
-    result = make_token(user)
+    # 3. 发新 access + 新 refresh（轮转）
+    access = make_access_token(user)
+    refresh = make_refresh_token(user)
 
-    # 吊销旧 token
+    # 4. 吊销旧 refresh
     old_jti = payload.get('jti')
     if old_jti:
-        revoke_token(old_jti)
+        revoke_refresh_token(old_jti)
 
-    return result
-
+    return {'access': access['token'], 'refresh': refresh['token']}
 ```
 
-### JWT的注销
+> 防重放：旧 refresh 被吊销后，如果同一个 refresh 又被拿来刷新，`verify_refresh_token` 会因为 Redis 里已经删了而抛 `TOKEN_REVOKED`，从而拦住。以后想做更强（检测到重放就把这个用户的所有会话全部踢下线），在这里扩展就行。
+
+### 路由守卫（装饰器）
+
+请求头里带的是 `Authorization: Bearer <token>`，所以装饰器要先把这个前缀剥掉，再校验，最后把用户信息存到 `g.current_user`，业务层就能直接拿到「当前是谁」。
 
 ```py
-def revoke_token(jti):
-    """注销 token：从 Redis 删除 返回 True/False"""
-    redis = get_redis_session()
-    redis.delete(jti)
-    return redis.get(jti) is None
+def _extract_bearer_token():
+    """从 Authorization 头解析 'Bearer <token>'，缺失 / 格式错抛 AppError"""
+    auth = request.headers.get('Authorization', '')
+    if not auth.startswith('Bearer '):
+        raise AppError(code=ApiResponse.LOGIN_REQUIRED, message='请先登录')
+    return auth[7:]   # 去掉 'Bearer ' 这 7 个字符
+
+# 普通登录用户
+def header_check_token_user(f):
+    @wraps(f)
+    def check_token(*args, **kwargs):
+        token = _extract_bearer_token()
+        payload = verify_access_token(token)
+        g.current_user = payload   # 业务层用 g.current_user['user_id'] 取当前用户
+        return f(*args, **kwargs)
+    return check_token
+
+# 管理员（在普通校验基础上，按需补角色判断）
+def header_check_token_admin(f):
+    @wraps(f)
+    def check_token(*args, **kwargs):
+        token = _extract_bearer_token()
+        payload = verify_access_token(token)
+        g.current_user = payload
+        # TODO: 在此校验 g.current_user['role'] 是否为管理员角色
+        return f(*args, **kwargs)
+    return check_token
 ```
+
+> 第 5 节「路由守卫」一直空着没写，其实就是这两个装饰器的用法——给路由加上 `@header_check_token_user`，就只有登录用户能访问了。
 
 ## 9、关于Redis 
 
@@ -533,6 +664,7 @@ def init_redis(app=None):
 
 
 
+
 ```py
 # 存入
 redis().set(jti,'token',ex=1800) (键，值，过期时间)
@@ -543,7 +675,6 @@ redis().get(jti)  #有就返回具体键值对，无就返回None
 #删除
 redis().delete(jti) 
 ```
-
 
 
 

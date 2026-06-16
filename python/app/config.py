@@ -28,6 +28,7 @@ class Config:
     # JWT
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     JWT_ACCESS_EXPIRES = os.environ.get('JWT_ACCESS_EXPIRES')
+    JWT_REFRESH_EXPIRES = os.environ.get('JWT_REFRESH_EXPIRES')
 
     # 用户最大校验次数
     MAX_LOGIN_ATTEMPTS = int(os.environ.get('MAX_LOGIN_ATTEMPTS'))

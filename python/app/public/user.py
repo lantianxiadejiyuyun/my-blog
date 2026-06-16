@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.utils.validators import check_or_raise
-from app.methods.token import make_token, verify_token, revoke_token, header_check_token
+from app.methods.token import make_access_token, verify_token, revoke_token
 from app.sql.mysqls.user import get_user_login
 
 user = Blueprint('user', __name__)
@@ -17,7 +17,7 @@ def user_login():
     user_data = get_user_login(username,password)
 
     if user_data:
-        token_datas = make_token(user_data)
+        token_datas = make_access_token(user_data)
 
         return jsonify({
             'code': 200,
